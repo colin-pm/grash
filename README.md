@@ -18,7 +18,7 @@ Testing has not been added for nested variable expansion.  The example below may
 
 ```shell
 COMMAND_ONE='bar'
-COMMAND_TWO="my_script foo | $COMMAND_TWO"
+COMMAND_TWO="my_script foo | ${COMMAND_ONE}"
 eval $COMMAND_TWO
 ```
 
