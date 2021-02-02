@@ -7,22 +7,19 @@ class wordvisitor(bashlex.parser.ast.nodevisitor):
         self.assignments = assignments
 
     def visitcommand(self, n, parts):
-        print(n)
         for i in range(len(parts)):
-            print(parts[i].kind
-                  )
             if parts[i].kind == 'commandsubstitution':
                 break
             words = self._process_command(parts[i])
-            if words == {'eval'} and len(parts) > i + 1:
-                words.update(self._process_command(parts[i+1]))
+            if words in ({'eval'}, {'source'}) and len(parts) > i + 1:
+                if self._process_command(parts[i+1]):
+                    words.update(self._process_command(parts[i+1]))
             if words:
                 self.words.update(set(words))
                 break
 
     def _process_command(self, part):
         if part.kind == 'word':
-            # Normal command
             if len(part.parts) == 0:
                 return {part.word}
             elif part.parts[0].kind == 'parameter':

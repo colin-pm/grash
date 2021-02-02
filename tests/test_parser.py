@@ -50,11 +50,10 @@ class Test(TestCase):
         s = 'eval foo'
         assert {'eval', 'foo'} == parser._get_words(s)
 
+        # This is really gross and should never happen, foo.sh will not be recognized as a dep
         s = 'eval $(cat foo.sh)'
-        assert {'eval', 'cat', 'foo.sh'} == parser._get_words(s)
+        assert {'eval', 'cat'} == parser._get_words(s)
 
-        # What do we do here?
         s = 'source foo.sh'
-        assert {'source', 'foo.sh'}
-
+        assert {'source', 'foo.sh'} == parser._get_words(s)
 
