@@ -1,6 +1,6 @@
 # Grash
 
-A graphical dependency analysis tool for bash scripts
+A dependency analysis tool for bash scripts
 
 
 ## Variable expansion
