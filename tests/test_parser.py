@@ -33,7 +33,8 @@ def test__get_words(test_input, expected):
 
 parse_inputs = [
     ('''foo a b c\nbar d e f''',{'foo', 'bar'}),
-    ('''FOO="echo foo"\neval $FOO''', {'echo', 'eval'})
+    ('''FOO="echo foo"\neval $FOO''', {'echo', 'eval'}),
+    ('''COMMAND_ONE="bar"\nCOMMAND_TWO="my_script foo | ${COMMAND_ONE}"\neval $COMMAND_TWO''', {'my_script', 'bar', 'eval'})
 ]
 
 

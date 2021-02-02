@@ -14,7 +14,7 @@ eval $COMMAND
 
 my_script and bar will be recognized as dependencies.
 
-Testing has not been added for nested variable expansion.  The example below may or may not currently work.
+Nested variables are also supported.  For example, both my_script and bar are recognized in the example below.
 
 ```shell
 COMMAND_ONE='bar'
