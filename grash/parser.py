@@ -23,7 +23,7 @@ class wordvisitor(bashlex.parser.ast.nodevisitor):
             if len(part.parts) == 0:
                 return {part.word}
             elif part.parts[0].kind == 'parameter':
-                return _get_words(self.assignments[part.parts[0].value])
+                return _get_words(self.assignments[part.parts[0].value], self.words, self.assignments)
 
     def visitassignment(self, n, word):
         key, value = word.split('=', 1)
@@ -36,23 +36,23 @@ def parse(file_path):
     :param file_path: Bash file to parse
     :return: Set of all words found in script
     """
-    executables = set()
+    assignments = {}
+    words = set()
     with open(file_path, 'r') as f:
-        while line := f.readline():
-            executables.update(_get_words(line))
-    return executables
+        lines = f.readlines()
+        for line in lines:
+            if len(line):
+                _get_words(line, words, assignments)
+    return words
 
 
-def _get_words(line):
+def _get_words(line, words, assignments):
     """
     Parses bash line and finds all word tokens that could be executables
     :param line: Line to parse
     :return: Set of all words found in line
     """
     trees = bashlex.parse(line)
-    words = set()
-    assignments = {}
     for tree in trees:
         visitor = wordvisitor(words, assignments)
         visitor.visit(tree)
-    return words
