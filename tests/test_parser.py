@@ -19,7 +19,8 @@ get_words_inputs = [
     ('FOO="echo foo"; eval $FOO', {'echo', 'eval'}),
     ('eval foo', {'eval', 'foo'}),
     ('eval $(cat foo.sh)', {'eval', 'cat'}),
-    ('source foo.sh', {'source', 'foo.sh'})
+    ('source foo.sh', {'source', 'foo.sh'}),
+    ('source /foo/bar.sh', {'source', 'bar.sh'})
 ]
 
 

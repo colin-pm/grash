@@ -8,6 +8,7 @@ authors = ["Colin McAllister <colinmca242@gmail.com>"]
 python = "^3.9.1"
 bashlex = "^0.15"
 pytest = "^6.2.2"
+python-magic = "^0.4.20"
 
 [tool.poetry.dev-dependencies]
 

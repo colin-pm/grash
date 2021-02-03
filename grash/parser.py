@@ -1,4 +1,5 @@
 import bashlex
+import os
 
 
 class wordvisitor(bashlex.parser.ast.nodevisitor):
@@ -10,7 +11,7 @@ class wordvisitor(bashlex.parser.ast.nodevisitor):
         for i in range(len(parts)):
             if parts[i].kind == 'commandsubstitution':
                 break
-            words = self._process_command(parts[i])
+            words = set(map(os.path.basename, self._process_command(parts[i]))) if self._process_command(parts[i]) else {}
             if words in ({'eval'}, {'source'}) and len(parts) > i + 1:
                 if self._process_command(parts[i+1]):
                     words.update(self._process_command(parts[i+1]))
@@ -21,7 +22,7 @@ class wordvisitor(bashlex.parser.ast.nodevisitor):
     def _process_command(self, part):
         if part.kind == 'word':
             if len(part.parts) == 0:
-                return {part.word}
+                return {os.path.basename(part.word)}
             elif part.parts[0].kind == 'parameter':
                 return _get_words(self.assignments[part.parts[0].value], self.words, self.assignments)
 
