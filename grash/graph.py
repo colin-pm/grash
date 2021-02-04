@@ -15,7 +15,7 @@ class Graph:
         for path in paths:
             for root, dirs, files in os.walk(path):
                 for file in files:
-                    self._nodes[file] = self.Node(os.join(root, file))
+                    self._nodes[file] = self.Node(os.path.join(root, file))
 
     def _add_scripts(self, scripts):
         for script in scripts:
