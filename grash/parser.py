@@ -43,20 +43,34 @@ def parse(file_path):
     words = set()
     with open(file_path, 'r') as f:
         lines = f.readlines()
-        # A lot of this stuff stems from bashlex not handling comments and multi-line functions well
-        # https://github.com/idank/bashlex/issues/23
-        # https://github.com/idank/bashlex/issues/47
-        # Strip comment lines from file
-        lines = [line for line in lines if not re.match(r'^[\s]*#.+$', line)]
-        single_line = '; '.join([line.rstrip('\n') for line in lines])
-        # Need to remove semicolons between a function declaration + curly brace and first command of function
-        # this is needed to ensure baslex can parse function
-        regex = re.compile(r'((function\s+){0,1}(\w+)\s+(\(\)\s+)*{\s*)(;)')
-        single_line = re.sub(regex, r'\1', single_line)
+        single_line = _preprocess(lines)
         if single_line:
             print(single_line)
             _get_words(single_line, words, assignments)
     return words
+
+
+def _preprocess(lines):
+    # A lot of this stuff stems from bashlex not handling comments and multi-line functions well
+    # https://github.com/idank/bashlex/issues/23
+    # https://github.com/idank/bashlex/issues/47
+    # Strip comment lines from file
+    lines = [line for line in lines if not re.match(r'^[\s]*#.+$', line)]
+    single_line = '; '.join([line.rstrip('\n') for line in lines])
+
+    # Ensure there's no leading semicolons
+    single_line = single_line.lstrip(';')
+
+    # Should ensure there are no double semi-colons
+    regex = re.compile(r'(?=;)(\s*;)+')
+    single_line = re.sub(regex, ';', single_line)
+
+    # Need to remove semicolons between a function declaration + curly brace and first command of function
+    # this is needed to ensure baslex can parse function
+    regex = re.compile(r'((function\s+){0,1}(\w+)\s+(\(\)\s+)*{\s*)(;)')
+    single_line = re.sub(regex, r'\1', single_line)
+
+    return single_line
 
 
 def _get_words(line, words, assignments):
