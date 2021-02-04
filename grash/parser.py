@@ -60,7 +60,7 @@ def _preprocess(lines):
     single_line = single_line.lstrip(';')
 
     # Should ensure there are no double semi-colons (TODO This may break case statements)
-    regex = re.compile(r'(?<=;)(\s*;)+')
+    regex = re.compile(r';(\s*;)+')
     single_line = re.sub(regex, ';', single_line)
 
     # Need to remove semicolons between a function declaration + curly brace and first command of function
