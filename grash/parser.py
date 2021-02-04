@@ -9,7 +9,6 @@ class wordvisitor(bashlex.parser.ast.nodevisitor):
         self.assignments = assignments
 
     def visitcommand(self, n, parts):
-        print(n)
         for i in range(len(parts)):
             if parts[i].kind == 'commandsubstitution':
                 break
