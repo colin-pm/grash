@@ -44,7 +44,6 @@ def parse(file_path):
         lines = f.readlines()
         single_line = _preprocess(lines)
         if single_line:
-            print(single_line)
             _get_words(single_line, words, assignments)
     return words
 
