@@ -59,13 +59,17 @@ def _preprocess(lines):
     # Ensure there's no leading semicolons
     single_line = single_line.lstrip(';')
 
-    # Should ensure there are no double semi-colons
-    regex = re.compile(r'(?=;)(\s*;)+')
+    # Should ensure there are no double semi-colons (TODO This may break case statements)
+    regex = re.compile(r'(?<=;)(\s*;)+')
     single_line = re.sub(regex, ';', single_line)
 
     # Need to remove semicolons between a function declaration + curly brace and first command of function
     # this is needed to ensure baslex can parse function
     regex = re.compile(r'((function\s+){0,1}(\w+)\s+(\(\)\s+)*{\s*)(;)')
+    single_line = re.sub(regex, r'\1', single_line)
+
+    # Need to remove any trailing semicolons after thens
+    regex = re.compile(r'(?<=;|\s)(then)\s*;')
     single_line = re.sub(regex, r'\1', single_line)
 
     return single_line

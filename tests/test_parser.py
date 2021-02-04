@@ -25,7 +25,8 @@ get_words_inputs = [
     ('function foo { echo test; }', {'echo'}),
     ('function foo { echo test; };', {'echo'}),
     ('foo () { echo test; }', {'echo'}),
-    ('foo () { echo test; };', {'echo'})
+    ('foo () { echo test; };', {'echo'}),
+    ('if [ "$1" == "-e" ]; then MSG="$2"; fi', {'['})
 ]
 
 
@@ -42,7 +43,8 @@ parse_inputs = [
     ('''FOO="echo foo"\neval $FOO''', {'echo', 'eval'}),
     ('''COMMAND_ONE="bar"\nCOMMAND_TWO="my_script foo | ${COMMAND_ONE}"\neval $COMMAND_TWO''', {'my_script', 'bar', 'eval'}),
     ('''foo () {\n    echo this is a test\n}\n''', {'echo'}),
-    ('''#!/bin/bash\nfoo\n#This is a comment\n# This is another comment\n    #This is another comment''', {'foo'})
+    ('''#!/bin/bash\nfoo\n#This is a comment\n# This is another comment\n    #This is another comment''', {'foo'}),
+    ('''if [ "$1" == "-e" ]; then\necho Test\nfi''', {'[', 'echo'})
 ]
 
 
