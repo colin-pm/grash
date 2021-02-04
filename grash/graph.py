@@ -26,7 +26,7 @@ class Graph:
             words = grash.parser.parse(script)
             for word in words:
                 if word in self._nodes:
-                    self._nodes[script].deps.append(self._nodes[word])
+                    self._nodes[script].dependencies.append(self._nodes[word])
 
     @property
     def scripts(self):
