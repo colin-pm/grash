@@ -38,7 +38,7 @@ class Graph:
     class Node:
         def __init__(self, file_path):
             self._file_path = file_path
-            self._filename = os.basename(file_path)
+            self._filename = os.path.basename(file_path)
             self._get_type()
             self._deps = []
 
