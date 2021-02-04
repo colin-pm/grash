@@ -39,11 +39,9 @@ class Graph:
         def __init__(self, file_path):
             self._file_path = file_path
             self._filename = os.path.basename(file_path)
+            self._type = magic.from_file(self._file_path)
             self._get_type()
             self._deps = []
-
-        def _get_type(self):
-            self._type = magic.from_file(self._file_path)
 
         @property
         def name(self):
