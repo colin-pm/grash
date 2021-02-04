@@ -26,7 +26,7 @@ def main():
 
 def do_inspect(graph):
     for script in graph.scripts:
-        print(f"Script: {script.name}")
+        print(f"Script: {script}")
         print(f"has dependencies...")
         for dep in sorted(graph[script].dependencies):
             print(dep.name)
