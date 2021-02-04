@@ -58,7 +58,6 @@ def _get_words(line, words, assignments):
     # Check if line has shebang
     match = re.search(r'(?<=#!)[/.\w]+', line)
     if match:
-        print(os.path.basename(match.group(0)))
         words.update({os.path.basename(match.group(0))})
         return
 
