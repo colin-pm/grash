@@ -82,6 +82,10 @@ def _preprocess(lines):
     regex = re.compile(r'(?<=;|\s)(in)\s*;')
     single_line = re.sub(regex, r'\1', single_line)
 
+    # Need to remove any trailing semicolons after fors
+    regex = re.compile(r'(?<=;|\s)(do)\s*;')
+    single_line = re.sub(regex, r'\1', single_line)
+
     return single_line
 
 
