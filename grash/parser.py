@@ -52,12 +52,17 @@ def _preprocess(lines):
     # A lot of this stuff stems from bashlex not handling comments, multi-line functions, switch statements well
     # https://github.com/idank/bashlex/issues/23
     # https://github.com/idank/bashlex/issues/47
+
     # Strip comment lines from file
     lines = [line for line in lines if not re.match(r'^[\s]*#.+$', line)]
 
+    # Remove any trailing comments from the script
+    lines = [re.sub(r'(?<=[^$])#.*$', '', line) for line in lines]
+
     # Remove all case related lines
-    regex = re.compile(r'(\s*esac\s*)|(\s*case [\w${}\"]+ in\s*)|(\s*\S+\)\s+)')
-    lines = [line for line in lines if not re.match(regex, line)]
+    lines = [line for line in lines if not re.match(r'^\s*esac\s*$', line)]
+    lines = [line for line in lines if not re.match(r'^\s*case [\w${}\"]+ in\s*$', line)]
+    lines = [line for line in lines if not re.match(r'^\s*\S+\)\s+$', line)]
 
     # Truncate script into a single line
     single_line = '; '.join([line.rstrip('\n') for line in lines])
@@ -65,12 +70,12 @@ def _preprocess(lines):
     # Ensure there's no leading semicolons
     single_line = single_line.lstrip(';')
 
-    # Should ensure there are no double semi-colons (TODO This may break case statements)
+    # Should ensure there are no double semi-colons
     regex = re.compile(r';(\s*;)+')
     single_line = re.sub(regex, ';', single_line)
 
     # Need to remove semicolons between a function declaration + curly brace and first command of function
-    # this is needed to ensure baslex can parse function
+    # this is needed to ensure baslex can parse functions
     regex = re.compile(r'((function\s+){0,1}(\w+)\s+(\(\)\s+)*{\s*)(;)')
     single_line = re.sub(regex, r'\1', single_line)
 
@@ -85,6 +90,18 @@ def _preprocess(lines):
     # Need to remove any trailing semicolons after fors
     regex = re.compile(r'(?<=;|\s)(do)\s*;')
     single_line = re.sub(regex, r'\1', single_line)
+
+    # Need to remove any trailing semicolons after open curly brackets
+    regex = re.compile(r'(?<=;|\s)({)\s*;')
+    single_line = re.sub(regex, r'\1', single_line)
+
+    # Need to remove any trailing semicolons after elses
+    regex = re.compile(r'(?<=;|\s)(else)\s*;')
+    single_line = re.sub(regex, r'\1', single_line)
+
+    # Need to remove any backslashes followed by a semicolon
+    regex = re.compile(r'\\\s*;')
+    single_line = re.sub(regex, r'', single_line)
 
     return single_line
 

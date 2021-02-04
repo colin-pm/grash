@@ -25,7 +25,7 @@ get_words_inputs = [
     ('function foo { echo test; }', {'echo'}),
     ('function foo { echo test; };', {'echo'}),
     ('foo () { echo test; }', {'echo'}),
-    ('foo () { echo test; };', {'echo'}),
+    ('foo () { echo test; }; baz;', {'echo', 'baz'}),
     ('if [ "$1" == "-e" ]; then MSG="$2"; fi', {'['})
 ]
 
