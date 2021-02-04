@@ -1,5 +1,6 @@
 import pytest
 from grash import parser
+from collections import defaultdict
 
 
 get_words_inputs = [
@@ -16,7 +17,6 @@ get_words_inputs = [
     ('a | b && c', {'a', 'b', 'c'}),
     ('$($<$(a) b)', {'a', '$'}),
     ('a <(b $(c))', {'a', 'b', 'c'}),
-    ('FOO="echo foo"; eval $FOO', {'echo', 'eval'}),
     ('eval foo', {'eval', 'foo'}),
     ('eval $(cat foo.sh)', {'eval', 'cat'}),
     ('source foo.sh', {'source', 'foo.sh'}),
@@ -33,8 +33,9 @@ get_words_inputs = [
 @pytest.mark.parametrize("test_input,expected", get_words_inputs)
 def test__get_words(test_input, expected):
     words = set()
-    assignments = {}
-    parser._get_words(test_input, words, assignments)
+    eval_vars = []
+    assignments = defaultdict(list)
+    parser._get_words(test_input, eval_vars, words, assignments)
     assert words == expected
 
 
@@ -42,10 +43,13 @@ parse_inputs = [
     ('''foo a b c\nbar d e f''', {'foo', 'bar'}),
     ('''FOO="echo foo"\neval $FOO''', {'echo', 'eval'}),
     ('''COMMAND_ONE="bar"\nCOMMAND_TWO="my_script foo | ${COMMAND_ONE}"\neval $COMMAND_TWO''', {'my_script', 'bar', 'eval'}),
-    ('''foo () {\n    echo this is a test\n}\n''', {'echo'}),
+    ('''foo () {\n  echo this is a test\n}\n''', {'echo'}),
     ('''#!/bin/bash\nfoo\n#This is a comment\n# This is another comment\n    #This is another comment''', {'foo'}),
     ('''if [ "$1" == "-e" ]; then\necho Test\nfi''', {'[', 'echo'}),
-    ('''case ${test} in\nfoo)\necho test\n;;\nbar)\nbaz test\n;;\nesac''', {'echo', 'baz'})
+    ('''case ${test} in\nfoo)\necho test\n;;\nbar)\nbaz test\n;;\nesac''', {'echo', 'baz'}),
+    ('''foo "this is a test" # And here is an inline comment\nbar baz''', {'foo', 'bar'}),
+    ('''foo () {\n  eval $COMMAND\n}\nCOMMAND="bar"\nfoo\n''', {'eval', 'foo', 'bar'}),
+    ('''foo () {\n  eval $COMMAND\n}\nif true; then\nCOMMAND="bar"\nelse\nCOMMAND="baz"\nfi\nfoo\n''', {'eval', 'true', 'foo', 'bar', 'baz'})
 ]
 
 

@@ -1,11 +1,13 @@
+from collections import defaultdict
 import bashlex
 import os
 import re
 
 
 class wordvisitor(bashlex.parser.ast.nodevisitor):
-    def __init__(self, words, assignments):
+    def __init__(self, words, evaluated_variables, assignments):
         self.words = words
+        self.evaluated_variables = evaluated_variables
         self.assignments = assignments
 
     def visitcommand(self, n, parts):
@@ -25,11 +27,12 @@ class wordvisitor(bashlex.parser.ast.nodevisitor):
             if len(part.parts) == 0:
                 return {os.path.basename(part.word)}
             elif part.parts[0].kind == 'parameter':
-                return _get_words(self.assignments[part.parts[0].value], self.words, self.assignments)
+                self.evaluated_variables.append(part.parts[0].value)
+                #return _get_words(self.assignments[part.parts[0].value], self.words, self.assignments)
 
     def visitassignment(self, n, word):
         key, value = word.split('=', 1)
-        self.assignments[key] = value
+        self.assignments[key].append(value)
 
 
 def parse(file_path):
@@ -38,14 +41,32 @@ def parse(file_path):
     :param file_path: Bash file to parse
     :return: Set of all words found in script
     """
-    assignments = {}
+    evaluated_variables = []
+    assignments = defaultdict(list)
     words = set()
     with open(file_path, 'r') as f:
         lines = f.readlines()
         single_line = _preprocess(lines)
         if single_line:
-            _get_words(single_line, words, assignments)
+            _get_words(single_line, evaluated_variables, words, assignments)
+    for eval_var in evaluated_variables:
+        for value in assignments[eval_var]:
+            _get_words(value, evaluated_variables, words, assignments)
     return words
+
+
+def _get_words(line, evaluated_variables, words, assignments):
+    """
+    Parses bash line and finds all word tokens that could be executables
+    :param line: Line to parse
+    :return: Set of all words found in line
+    """
+    if not line:
+        return
+    trees = bashlex.parse(line)
+    for tree in trees:
+        visitor = wordvisitor(words, evaluated_variables, assignments)
+        visitor.visit(tree)
 
 
 def _preprocess(lines):
@@ -104,17 +125,3 @@ def _preprocess(lines):
     single_line = re.sub(regex, r'', single_line)
 
     return single_line
-
-
-def _get_words(line, words, assignments):
-    """
-    Parses bash line and finds all word tokens that could be executables
-    :param line: Line to parse
-    :return: Set of all words found in line
-    """
-    if not line:
-        return
-    trees = bashlex.parse(line)
-    for tree in trees:
-        visitor = wordvisitor(words, assignments)
-        visitor.visit(tree)
