@@ -28,7 +28,6 @@ class WordVisitor(bashlex.parser.ast.nodevisitor):
                 return {os.path.basename(part.word)}
             elif part.parts[0].kind == 'parameter':
                 self.evaluated_variables.append(part.parts[0].value)
-                #return _get_words(self.assignments[part.parts[0].value], self.words, self.assignments)
 
     def visitassignment(self, n, word):
         key, value = word.split('=', 1)
