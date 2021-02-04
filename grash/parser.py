@@ -1,5 +1,6 @@
 import bashlex
 import os
+import re
 
 
 class wordvisitor(bashlex.parser.ast.nodevisitor):
@@ -43,6 +44,7 @@ def parse(file_path):
         lines = f.readlines()
         for line in lines:
             if len(line):
+                line = line.rstrip('\n')
                 _get_words(line, words, assignments)
     return words
 
@@ -53,6 +55,17 @@ def _get_words(line, words, assignments):
     :param line: Line to parse
     :return: Set of all words found in line
     """
+    # Check if line has shebang
+    match = re.search(r'(?<=#!)[/.\w]+', line)
+    if match:
+        print(os.path.basename(match.group(0)))
+        words.update({os.path.basename(match.group(0))})
+        return
+
+    # Check if line is comment
+    if re.match(r'^[\s#]+.+$', line):
+        return
+
     trees = bashlex.parse(line)
     for tree in trees:
         visitor = wordvisitor(words, assignments)

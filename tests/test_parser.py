@@ -20,7 +20,9 @@ get_words_inputs = [
     ('eval foo', {'eval', 'foo'}),
     ('eval $(cat foo.sh)', {'eval', 'cat'}),
     ('source foo.sh', {'source', 'foo.sh'}),
-    ('source /foo/bar.sh', {'source', 'bar.sh'})
+    ('source /foo/bar.sh', {'source', 'bar.sh'}),
+    ('# This is a comment and should return nothing', set()),
+    ('#!/bin/ash', {'ash'})
 ]
 
 
