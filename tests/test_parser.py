@@ -21,8 +21,11 @@ get_words_inputs = [
     ('eval $(cat foo.sh)', {'eval', 'cat'}),
     ('source foo.sh', {'source', 'foo.sh'}),
     ('source /foo/bar.sh', {'source', 'bar.sh'}),
-    ('# This is a comment and should return nothing', set()),
-    ('#!/bin/ash', {'ash'})
+    ('foo # This is a comment and should return nothing', {'foo'}),
+    ('function foo { echo test; }', {'echo'}),
+    ('function foo { echo test; };', {'echo'}),
+    ('foo () { echo test; }', {'echo'}),
+    ('foo () { echo test; };', {'echo'})
 ]
 
 
@@ -35,9 +38,11 @@ def test__get_words(test_input, expected):
 
 
 parse_inputs = [
-    ('''foo a b c\nbar d e f''',{'foo', 'bar'}),
+    ('''foo a b c\nbar d e f''', {'foo', 'bar'}),
     ('''FOO="echo foo"\neval $FOO''', {'echo', 'eval'}),
-    ('''COMMAND_ONE="bar"\nCOMMAND_TWO="my_script foo | ${COMMAND_ONE}"\neval $COMMAND_TWO''', {'my_script', 'bar', 'eval'})
+    ('''COMMAND_ONE="bar"\nCOMMAND_TWO="my_script foo | ${COMMAND_ONE}"\neval $COMMAND_TWO''', {'my_script', 'bar', 'eval'}),
+    ('''foo () {\n    echo this is a test\n}\n''', {'echo'}),
+    ('''#!/bin/bash\nfoo\n#This is a comment\n# This is another comment\n    #This is another comment''', {'foo'})
 ]
 
 

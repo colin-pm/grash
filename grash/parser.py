@@ -9,6 +9,7 @@ class wordvisitor(bashlex.parser.ast.nodevisitor):
         self.assignments = assignments
 
     def visitcommand(self, n, parts):
+        print(n)
         for i in range(len(parts)):
             if parts[i].kind == 'commandsubstitution':
                 break
@@ -42,10 +43,19 @@ def parse(file_path):
     words = set()
     with open(file_path, 'r') as f:
         lines = f.readlines()
-        for line in lines:
-            if len(line):
-                line = line.rstrip('\n')
-                _get_words(line, words, assignments)
+        # A lot of this stuff stems from bashlex not handling comments and multi-line functions well
+        # https://github.com/idank/bashlex/issues/23
+        # https://github.com/idank/bashlex/issues/47
+        # Strip comment lines from file
+        lines = [line for line in lines if not re.match(r'^[\s]*#.+$', line)]
+        single_line = '; '.join([line.rstrip('\n') for line in lines])
+        # Need to remove semicolons between a function declaration + curly brace and first command of function
+        # this is needed to ensure baslex can parse function
+        regex = re.compile(r'((function\s+){0,1}(\w+)\s+(\(\)\s+)*{\s*)(;)')
+        single_line = re.sub(regex, r'\1', single_line)
+        if single_line:
+            print(single_line)
+            _get_words(single_line, words, assignments)
     return words
 
 
@@ -55,16 +65,8 @@ def _get_words(line, words, assignments):
     :param line: Line to parse
     :return: Set of all words found in line
     """
-    # Check if line has shebang
-    match = re.search(r'(?<=#!)[/.\w]+', line)
-    if match:
-        words.update({os.path.basename(match.group(0))})
+    if not line:
         return
-
-    # Check if line is comment
-    if re.match(r'^[\s#]+.+$', line):
-        return
-
     trees = bashlex.parse(line)
     for tree in trees:
         visitor = wordvisitor(words, assignments)
