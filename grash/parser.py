@@ -4,7 +4,7 @@ import os
 import re
 
 
-class wordvisitor(bashlex.parser.ast.nodevisitor):
+class WordVisitor(bashlex.parser.ast.nodevisitor):
     def __init__(self, words, evaluated_variables, assignments):
         self.words = words
         self.evaluated_variables = evaluated_variables
@@ -65,7 +65,7 @@ def _get_words(line, evaluated_variables, words, assignments):
         return
     trees = bashlex.parse(line)
     for tree in trees:
-        visitor = wordvisitor(words, evaluated_variables, assignments)
+        visitor = WordVisitor(words, evaluated_variables, assignments)
         visitor.visit(tree)
 
 
