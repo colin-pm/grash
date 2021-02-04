@@ -44,7 +44,8 @@ parse_inputs = [
     ('''COMMAND_ONE="bar"\nCOMMAND_TWO="my_script foo | ${COMMAND_ONE}"\neval $COMMAND_TWO''', {'my_script', 'bar', 'eval'}),
     ('''foo () {\n    echo this is a test\n}\n''', {'echo'}),
     ('''#!/bin/bash\nfoo\n#This is a comment\n# This is another comment\n    #This is another comment''', {'foo'}),
-    ('''if [ "$1" == "-e" ]; then\necho Test\nfi''', {'[', 'echo'})
+    ('''if [ "$1" == "-e" ]; then\necho Test\nfi''', {'[', 'echo'}),
+    ('''case ${test} in\nfoo)\necho test\n;;\nbar)\nbaz test\n;;\nesac''', {'echo', 'baz'})
 ]
 
 

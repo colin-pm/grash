@@ -49,11 +49,17 @@ def parse(file_path):
 
 
 def _preprocess(lines):
-    # A lot of this stuff stems from bashlex not handling comments and multi-line functions well
+    # A lot of this stuff stems from bashlex not handling comments, multi-line functions, switch statements well
     # https://github.com/idank/bashlex/issues/23
     # https://github.com/idank/bashlex/issues/47
     # Strip comment lines from file
     lines = [line for line in lines if not re.match(r'^[\s]*#.+$', line)]
+
+    # Remove all case related lines
+    regex = re.compile(r'(\s*esac\s*)|(\s*case [\w${}\"]+ in\s*)|(\s*\S+\)\s+)')
+    lines = [line for line in lines if not re.match(regex, line)]
+
+    # Truncate script into a single line
     single_line = '; '.join([line.rstrip('\n') for line in lines])
 
     # Ensure there's no leading semicolons
