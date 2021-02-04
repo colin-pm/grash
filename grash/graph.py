@@ -15,7 +15,7 @@ class Graph:
         for path in paths:
             for root, dirs, files in os.walk(path):
                 for file in files:
-                    self._nodes[file] = self.Node(file)
+                    self._nodes[file] = self.Node(os.join(root, file))
 
     def _add_scripts(self, scripts):
         for script in scripts:
@@ -36,13 +36,14 @@ class Graph:
         return self._nodes[key]
 
     class Node:
-        def __init__(self, filename):
-            self._filename = filename
+        def __init__(self, file_path):
+            self._file_path = file_path
+            self._filename = os.basename(file_path)
             self._get_type()
             self._deps = []
 
         def _get_type(self):
-            self._type = magic.from_file(self._filename)
+            self._type = magic.from_file(self._file_path)
 
         @property
         def name(self):
