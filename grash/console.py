@@ -13,7 +13,7 @@ def main():
 
     parser_graph = subparsers.add_parser('graph', help='Graph dependencies')
     parser_graph.add_argument('-p', '--path', help="Use passed path instead of PATH from environment")
-    parser_inspect.add_argument('scripts', nargs='+', help="Scripts to graph")
+    parser_graph.add_argument('scripts', nargs='+', help="Scripts to graph")
 
     args = parser.parse_args()
 
