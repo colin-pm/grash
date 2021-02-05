@@ -84,11 +84,11 @@ def _preprocess(lines):
     lines = [line for line in lines if not re.match(r'^\s*case [\w${}\"]+ in\s*$', line)]
     lines = [line for line in lines if not re.match(r'^\s*\S+\)\s+$', line)]
 
+    # Remove arithmetic operators with a placeholder value
+    lines = [re.sub(r'\$\(\(.+\)\)', '$ARITHMETIC_PLACEHOLDER', line) for line in lines]
+
     # Truncate script into a single line
     single_line = '; '.join([line.rstrip('\n') for line in lines])
-
-    # Ensure there's no leading semicolons
-    single_line = single_line.lstrip(';')
 
     # Should ensure there are no double semi-colons
     regex = re.compile(r';(\s*;)+')
@@ -122,5 +122,8 @@ def _preprocess(lines):
     # Need to remove any backslashes followed by a semicolon
     regex = re.compile(r'\\\s*;')
     single_line = re.sub(regex, r'', single_line)
+
+    # Ensure there's no leading or trailing semicolons
+    single_line = single_line.strip(';')
 
     return single_line
