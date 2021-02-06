@@ -24,19 +24,32 @@ Currently, Grash only supports printing out the dependencies for the selected sc
 
 To evaluate the dependencies in a script, execute a command like the one below.
 
+With foo.sh...
+```shell
+#!/usr/bin/env bash
+for FILE in $(ls $1); do
+  if [ ${FILE: -4} == .txt ]; then
+    rm $FILE
+  fi
+done
+echo "Cleared out all .txt files"
+```
+
+Run...
 ```shell
 $ grash inspect foo.sh
 Script: foo.sh
 has dependencies...
 echo
 ls
-mkdir
 rm
 ```
 
 Several scripts can be evaluated at the same time.
 
 ```shell
+$ echo '#!/usr/bin/env bash' > bar.sh
+$ echo 'echo "This is a test"' >> bar.sh
 $ grash inspect foo.sh bar.sh
 Script: foo.sh
 has dependencies...
@@ -48,10 +61,11 @@ rm
 Script: bar.sh
 has dependencies...
 echo
-rm
 ```
 
 If you want to use a PATH other than the PATH provided by the system.  The ```-p``` flag can be used to specify an exclusive PATH for grash to use.
+
+The ```-p``` flag is intended for evaluating scripts that may be used on a separate root filesystem, like the target root filesystem within Buildroot.
 
 ```shell
 $ grash inspect -p "~/.local/bin:/usr/sbin" foo.sh
