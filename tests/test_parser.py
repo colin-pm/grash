@@ -26,7 +26,8 @@ get_words_inputs = [
     ('function foo { echo test; };', {'echo'}),
     ('foo () { echo test; }', {'echo'}),
     ('foo () { echo test; }; baz;', {'echo', 'baz'}),
-    ('if [ "$1" == "-e" ]; then MSG="$2"; fi', {'['})
+    ('if [ "$1" == "-e" ]; then MSG="$2"; fi', {'['}),
+    ('foo &', {'foo'})
 ]
 
 
@@ -49,7 +50,8 @@ parse_inputs = [
     ('''case ${test} in\nfoo)\necho test\n;;\nbar)\nbaz test\n;;\nesac''', {'echo', 'baz'}),
     ('''foo "this is a test" # And here is an inline comment\nbar baz''', {'foo', 'bar'}),
     ('''foo () {\n  eval $COMMAND\n}\nCOMMAND="bar"\nfoo\n''', {'eval', 'foo', 'bar'}),
-    ('''foo () {\n  eval $COMMAND\n}\nif true; then\nCOMMAND="bar"\nelse\nCOMMAND="baz"\nfi\nfoo\n''', {'eval', 'true', 'foo', 'bar', 'baz'})
+    ('''foo () {\n  eval $COMMAND\n}\nif true; then\nCOMMAND="bar"\nelse\nCOMMAND="baz"\nfi\nfoo\n''', {'eval', 'true', 'foo', 'bar', 'baz'}),
+    ('''echo "Starting eth0 carrier detect..."\n/usr/sbin/monitor-eth0-carrier.sh &\necho "Usage: $0 {start}"\nexit 1\nexit $?''', {'echo', 'monitor-eth0-carrier.sh', 'exit'})
 ]
 
 

@@ -123,6 +123,10 @@ def _preprocess(lines):
     regex = re.compile(r'\\\s*;')
     single_line = re.sub(regex, r'', single_line)
 
+    # Don't want any asynchronous commands mixed in
+    regex = re.compile(r'(?<=[^&])&(?=[^&])')
+    single_line = re.sub(regex, r'', single_line)
+
     # Ensure there's no leading or trailing semicolons
     single_line = single_line.strip(';')
 
