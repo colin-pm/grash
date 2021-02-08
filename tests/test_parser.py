@@ -51,7 +51,8 @@ parse_inputs = [
     ('''foo "this is a test" # And here is an inline comment\nbar baz''', {'foo', 'bar'}),
     ('''foo () {\n  eval $COMMAND\n}\nCOMMAND="bar"\nfoo\n''', {'eval', 'foo', 'bar'}),
     ('''foo () {\n  eval $COMMAND\n}\nif true; then\nCOMMAND="bar"\nelse\nCOMMAND="baz"\nfi\nfoo\n''', {'eval', 'true', 'foo', 'bar', 'baz'}),
-    ('''echo "Starting eth0 carrier detect..."\n/usr/sbin/monitor-eth0-carrier.sh &\necho "Usage: $0 {start}"\nexit 1\nexit $?''', {'echo', 'monitor-eth0-carrier.sh', 'exit'})
+    ('''echo "Starting eth0 carrier detect..."\n/usr/sbin/monitor-eth0-carrier.sh &\necho "Usage: $0 {start}"\nexit 1\nexit $?''', {'echo', 'monitor-eth0-carrier.sh', 'exit'}),
+    ('''egrep '^#.*$' > /dev/null 2>&1 # this is a trailing comment''', {'egrep'})
 ]
 
 
