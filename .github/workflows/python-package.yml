@@ -38,3 +38,4 @@ jobs:
       run: |
         poetry shell
         pytest
+      shell: bash
