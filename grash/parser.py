@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, Counter
 import bashlex
 import os
 import re
@@ -79,6 +79,7 @@ def _get_words(line, evaluated_variables, words, assignments):
     """
     if not line:
         return
+    print(line)
     trees = bashlex.parse(line)
     for tree in trees:
         visitor = WordVisitor(words, evaluated_variables, assignments)
@@ -103,9 +104,22 @@ def _preprocess(lines):
     lines = [re.sub(r'(?<=[^$])#[\w\s]*$', '', line) for line in lines]
 
     # Remove all case related lines
-    lines = [line for line in lines if not re.match(r'^\s*esac\s*$', line)]
-    lines = [line for line in lines if not re.match(r'^\s*case [\w${}\"]+ in\s*$', line)]
-    lines = [line for line in lines if not re.match(r'^\s*\S+\)\s+$', line)]
+    tmp_lines = []
+    case_level = 0
+    for line in lines:
+        if re.match(r'^\s*case [\w${}\"]+ in\s*$', line):
+            case_level += 1
+        elif re.match(r'^\s*esac\s*$', line):
+            case_level -= 1
+        elif case_level > 0:
+            characters = Counter(line)
+            if characters[')'] > characters ['(']:
+                continue
+            else:
+                tmp_lines.append(line)
+        else:
+            tmp_lines.append(line)
+    lines = tmp_lines
 
     # Remove arithmetic operators with a placeholder value
     lines = [re.sub(r'\$\(\(.+\)\)', '$ARITHMETIC_PLACEHOLDER', line) for line in lines]
