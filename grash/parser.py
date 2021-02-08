@@ -97,7 +97,7 @@ def _preprocess(lines):
     # https://github.com/idank/bashlex/issues/47
 
     # Strip comment lines from file
-    lines = [line for line in lines if not re.match(r'^[\s]*#.+$', line)]
+    lines = [line for line in lines if not re.match(r'^[\s]*#.*$', line)]
 
     # Remove any trailing comments from the script
     lines = [re.sub(r'(?<=[^$])#[\w\s]*$', '', line) for line in lines]
