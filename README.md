@@ -6,12 +6,21 @@ A dependency analysis tool for bash scripts.
 
 This tool was created as a way to quickly evaluate the executables a bash script depends on.  It works by parsing one or more scripts and finding the names of everything that is executed.  It then compares that list against the files in the environment's path and returns the common set.
 
-
 ## Installation
+
+### From PyPi
+
+```shell
+pip install grash
+grash -h
+```
+
+### From source
 
 Clone down the project and install with Poetry.
 
 ```shell
+git clone git@github.com:colin-pm/grash.git
 cd grash
 poetry install
 poetry shell
