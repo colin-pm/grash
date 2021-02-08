@@ -11,6 +11,12 @@ class WordVisitor(bashlex.parser.ast.nodevisitor):
         self.assignments = assignments
 
     def visitcommand(self, n, parts):
+        """
+        Stores all
+        :param n: Command node
+        :param parts: Parts of command
+        :return: None
+        """
         for i in range(len(parts)):
             if parts[i].kind == 'commandsubstitution':
                 break
@@ -23,6 +29,11 @@ class WordVisitor(bashlex.parser.ast.nodevisitor):
                 break
 
     def _process_command(self, part):
+        """
+        Helper function for visitcommand.  Either finds executable if word or processes the parameter.
+        :param part: node to evaluate
+        :return: None
+        """
         if part.kind == 'word':
             if len(part.parts) == 0:
                 return {os.path.basename(part.word)}
@@ -30,6 +41,12 @@ class WordVisitor(bashlex.parser.ast.nodevisitor):
                 self.evaluated_variables.append(part.parts[0].value)
 
     def visitassignment(self, n, word):
+        """
+        Stores all assignments in case any assignments are evaluated
+        :param n: Node
+        :param word: Assignment
+        :return: None
+        """
         key, value = word.split('=', 1)
         self.assignments[key].append(value)
 
@@ -69,6 +86,12 @@ def _get_words(line, evaluated_variables, words, assignments):
 
 
 def _preprocess(lines):
+    """
+    Preprocessor for bashliex.  Bashlex is not really set up to handle multiple lines.
+    The preprocessor truncates a script into a single line that can be handled by bashlex.
+    :param lines: Lines to preprocess for bashlex
+    :return: Single line that is parsable by bashlex
+    """
     # A lot of this stuff stems from bashlex not handling comments, multi-line functions, switch statements well
     # https://github.com/idank/bashlex/issues/23
     # https://github.com/idank/bashlex/issues/47

@@ -14,6 +14,7 @@ def main():
     # TODO
     # parser_graph = subparsers.add_parser('graph', help='Graph dependencies')
     # parser_graph.add_argument('-p', '--path', help="Use passed path instead of PATH from environment")
+    # parser_graph.add_argument('-o', '--output', help="Output image file")
     # parser_graph.add_argument('scripts', nargs='+', help="Scripts to graph")
 
     args = parser.parse_args()
@@ -26,6 +27,11 @@ def main():
 
 
 def do_inspect(graph):
+    """
+    Prints out graph to console
+    :param graph: Graph object to print out
+    :return:
+    """
     for script in graph.scripts:
         print(f"Script: {script}")
         print(f"has dependencies...")
@@ -34,6 +40,11 @@ def do_inspect(graph):
 
 
 def do_graph(graph):
+    """
+    Creates output image file of graph
+    :param graph:
+    :return:
+    """
     # TODO
     return
 
