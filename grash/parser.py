@@ -100,7 +100,7 @@ def _preprocess(lines):
     lines = [line for line in lines if not re.match(r'^[\s]*#.+$', line)]
 
     # Remove any trailing comments from the script
-    lines = [re.sub(r'(?<=[^$])#.*$', '', line) for line in lines]
+    lines = [re.sub(r'(?<=[^$])#[\w\s]*$', '', line) for line in lines]
 
     # Remove all case related lines
     lines = [line for line in lines if not re.match(r'^\s*esac\s*$', line)]
