@@ -80,7 +80,6 @@ class Graph:
             self._file_path = file_path
             self._filename = os.path.basename(file_path)
             self._type = magic.from_file(self._file_path)
-            self._get_type()
             self._deps = []
 
         @property
