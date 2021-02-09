@@ -1,8 +1,11 @@
 from grash import graph
 import os.path
+import os
 
 
 def create_test_files(tmpdir):
+    with open(os.path.join(tmpdir, 'echo'), 'w') as f:
+        f.write("This isn't the echo you're looking for")
     with open(os.path.join(tmpdir, 'foo.sh'), 'w') as f:
         f.write('echo "this is a test"')
     with open(os.path.join(tmpdir, 'bar.sh'), 'w') as f:
@@ -12,9 +15,10 @@ def create_test_files(tmpdir):
 
 
 def test__get_all_files_from_paths(tmpdir):
+    test_scripts = [os.path.join(tmpdir, script) for script in ['foo.sh', 'bar.sh', 'baz.sh']]
     create_test_files(tmpdir)
     files = graph._get_all_files_from_paths([tmpdir])
-    assert all([file in files for file in ['foo.sh', 'bar.sh', 'baz.sh']])
+    assert all([file in files for file in test_scripts])
 
 
 def test_graph(tmpdir):
@@ -24,14 +28,17 @@ def test_graph(tmpdir):
 
     assert all([script in g.scripts for script in test_scripts])
 
-    assert g['foo.sh'].name == 'foo.sh'
-    assert g['foo.sh'].dependencies == {'echo'}
-    assert g['foo.sh'].type == 'bash script'
+    assert g[test_scripts[0]].name == 'foo.sh'
+    deps = [dep.name for dep in g[test_scripts[0]].dependencies]
+    assert [script in deps for script in ['echo']]
+    assert g[test_scripts[0]].type == 'bash script'
 
-    assert g['bar.sh'].name == 'bar.sh'
-    assert g['bar.sh'].dependencies == {'echo', 'foo.sh'}
-    assert g['bar.sh'].type == 'bash script'
+    assert g[test_scripts[1]].name == 'bar.sh'
+    deps = [dep.name for dep in g[test_scripts[1]].dependencies]
+    assert [script in deps for script in ['echo', 'foo.sh']]
+    assert g[test_scripts[1]].type == 'bash script'
 
-    assert g['baz.sh'].name == 'baz.sh'
-    assert g['baz.sh'].dependencies == {'foo.sh', 'bar.sh', 'echo'}
-    assert g['baz.sh'].type == 'bash script'
+    assert g[test_scripts[2]].name == 'baz.sh'
+    deps = [dep.name for dep in g[test_scripts[2]].dependencies]
+    assert [script in deps for script in ['bar.sh', 'echo', 'foo.sh']]
+    assert g[test_scripts[2]].type == 'bash script'
