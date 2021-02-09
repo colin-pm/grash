@@ -7,9 +7,9 @@ def create_test_files(tmpdir):
     with open(os.path.join(tmpdir, 'echo'), 'w') as f:
         f.write("This isn't the echo you're looking for")
     with open(os.path.join(tmpdir, 'foo.sh'), 'w') as f:
-        f.write('echo "this is a test"')
+        f.write('#!/bin/bash\necho "this is a test"')
     with open(os.path.join(tmpdir, 'bar.sh'), 'w') as f:
-        f.write('echo "This is another test"\nfoo.sh 1 2 3')
+        f.write('#!/bin/bash\necho "This is another test"\nfoo.sh 1 2 3')
     with open(os.path.join(tmpdir, 'baz.sh'), 'w') as f:
         f.write('#!/bin/bash\nfoo.sh 1 2 3\nbar.sh\necho "Done!"')
 
