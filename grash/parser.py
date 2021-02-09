@@ -79,7 +79,6 @@ def _get_words(line, evaluated_variables, words, assignments):
     """
     if not line:
         return
-    print(line)
     trees = bashlex.parse(line)
     for tree in trees:
         visitor = WordVisitor(words, evaluated_variables, assignments)
