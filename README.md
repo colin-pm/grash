@@ -1,5 +1,8 @@
 # Grash
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/colin-pm/grash/Python%20package)
+
+
 A dependency analysis tool for bash scripts.
 
 ## Purpose
