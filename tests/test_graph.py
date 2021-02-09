@@ -13,13 +13,13 @@ def create_test_files(tmpdir):
 
 def test__get_all_files_from_paths(tmpdir):
     create_test_files(tmpdir)
-    files = graph._get_all_files_from_paths(tmpdir)
+    files = graph._get_all_files_from_paths([tmpdir])
     assert all([file in files for file in ['foo.sh', 'bar.sh', 'baz.sh']])
 
 
 def test_graph(tmpdir):
     create_test_files(tmpdir)
-    test_scripts = [os.path.join(tmpdir, script) for script in ['foo.sh', 'bar.sh', 'baz.sh']]
+    test_scripts = [os.path.join([tmpdir], script) for script in ['foo.sh', 'bar.sh', 'baz.sh']]
     g = graph.Graph(tmpdir, test_scripts)
 
     assert all([script in g.scripts for script in test_scripts])
