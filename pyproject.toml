@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grash"
-version = "0.0.0"
+version = "0.1.0"
 description = "A dependency analysis tool for bash scripts"
 authors = ["Colin McAllister <colinmca242@gmail.com>"]
 
