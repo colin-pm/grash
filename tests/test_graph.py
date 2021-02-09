@@ -24,8 +24,14 @@ def test_graph(tmpdir):
 
     assert all([script in g.scripts for script in test_scripts])
 
-    assert g['foo.sh'] == {'echo'}
+    assert g['foo.sh'].name == 'foo.sh'
+    assert g['foo.sh'].dependencies == {'echo'}
+    assert g['foo.sh'].type == 'bash script'
 
-    assert g['bar.sh'] == {'echo', 'foo.sh'}
+    assert g['bar.sh'].name == 'bar.sh'
+    assert g['bar.sh'].dependencies == {'echo', 'foo.sh'}
+    assert g['bar.sh'].type == 'bash script'
 
-    assert g['baz.sh'] == {'foo.sh', 'bar.sh', 'echo'}
+    assert g['baz.sh'].name == 'baz.sh'
+    assert g['baz.sh'].dependencies == {'foo.sh', 'bar.sh', 'echo'}
+    assert g['baz.sh'].type == 'bash script'
