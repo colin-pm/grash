@@ -31,14 +31,14 @@ def test_graph(tmpdir):
     assert g[test_scripts[0]].name == 'foo.sh'
     deps = [dep.name for dep in g[test_scripts[0]].dependencies]
     assert [script in deps for script in ['echo']]
-    assert g[test_scripts[0]].type == 'bash script'
+    assert g[test_scripts[0]].type == 'Bourne-Again shell script, ASCII text executable'
 
     assert g[test_scripts[1]].name == 'bar.sh'
     deps = [dep.name for dep in g[test_scripts[1]].dependencies]
     assert [script in deps for script in ['echo', 'foo.sh']]
-    assert g[test_scripts[1]].type == 'bash script'
+    assert g[test_scripts[1]].type == 'Bourne-Again shell script, ASCII text executable'
 
     assert g[test_scripts[2]].name == 'baz.sh'
     deps = [dep.name for dep in g[test_scripts[2]].dependencies]
     assert [script in deps for script in ['bar.sh', 'echo', 'foo.sh']]
-    assert g[test_scripts[2]].type == 'bash script'
+    assert g[test_scripts[2]].type == 'Bourne-Again shell script, ASCII text executable'
