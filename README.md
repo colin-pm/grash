@@ -1,6 +1,7 @@
 # Grash
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/colin-pm/grash/Python%20package)
+[![codecov](https://codecov.io/gh/colin-pm/grash/branch/master/graph/badge.svg?token=VKKFM22615)](https://codecov.io/gh/colin-pm/grash)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/grash)
 
 A dependency analysis tool for bash scripts.
